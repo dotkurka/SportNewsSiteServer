@@ -1,0 +1,19 @@
+{
+    "name": "site_server",
+    "version": "1.0.0",
+    "description": "backend for the SportNewsSite",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon index.js",
+        "start": "node index.js"
+    },
+    "author": "dotkurka <moizeromg@gmail.com>",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.18.2",
+        "mongoose": "^7.4.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.0.1"
+    }
+}
