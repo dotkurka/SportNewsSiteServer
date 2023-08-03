@@ -1,7 +1,17 @@
 const User = require('../models/user');
 const Role = require('../models/role');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
+const { secret } = require('../config/tokenKey');
+
+const generateAccessToken = (id, roles) => {
+    const payload = {
+        id,
+        roles,
+    };
+    return jwt.sign(payload, secret, { expiresIn: '10m' });
+};
 
 class authController {
     async registration(req, res) {
@@ -24,9 +34,10 @@ class authController {
                 email,
                 roles: [userRole.value],
             });
-            user.save();
-
-            return res.json({ message: 'User created' });
+            await user.save();
+            const currentUser = await User.findOne({ email });
+            const token = generateAccessToken(currentUser._id, currentUser.roles);
+            return res.json({ token });
         } catch (err) {
             console.log(err);
             res.status(400).json({ message: 'Registration error' });
@@ -35,16 +46,46 @@ class authController {
 
     async login(req, res) {
         try {
+            const { email, password } = req.body;
+            const user = await User.findOne({ email });
+            if (!user) {
+                return res.status(400).json({ message: 'No such user exists' });
+            }
+            const validPassword = bcrypt.compareSync(password, user.password);
+            if (!validPassword) {
+                res.status(400).json({ message: 'Password incorrect' });
+            }
+            const token = generateAccessToken(user._id, user.roles);
+            return res.json({ token });
         } catch (err) {
             console.log(err);
             res.status(400).json({ message: 'Login error' });
         }
     }
 
+    async getUser(req, res) {
+        try {
+            let token = req.headers.authorization;
+            if (token) {
+                token = token.split(' ')[1];
+            } else {
+                return res.status(403).json({ message: 'User is not authorized' });
+            }
+            const { id } = jwt.verify(token, secret);
+            const user = await User.findById(id);
+            return res.json(user);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     async getUsers(req, res) {
         try {
-            res.json('server works');
-        } catch (err) {}
+            const users = await User.find();
+            res.json(users);
+        } catch (err) {
+            console.log(err);
+        }
     }
 }
 
