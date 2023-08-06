@@ -1,8 +1,10 @@
-const jwt = require('jsonwebtoken');
-const { secret } = require('../config/tokenKey');
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { Request, Response, NextFunction } from 'express';
 
-const roleMiddelware = (roles) => {
-    return function (req, res, next) {
+import { secret } from '../config/tokenKey.js';
+
+const roleMiddelware = (roles: string) => {
+    return function (req: Request, res: Response, next: NextFunction) {
         if (req.method === 'OPTIONS') {
             next();
         }
@@ -14,9 +16,9 @@ const roleMiddelware = (roles) => {
             } else {
                 return res.status(403).json({ message: 'User is not authorized' });
             }
-            const { roles: userRoles } = jwt.verify(token, secret);
+            const { roles: userRoles } = jwt.verify(token, secret) as JwtPayload;
             let hasRole = false;
-            userRoles.forEach((role) => {
+            userRoles.forEach((role: string) => {
                 if (roles.includes(role)) {
                     hasRole = true;
                 }
@@ -32,4 +34,4 @@ const roleMiddelware = (roles) => {
     };
 };
 
-module.exports = roleMiddelware;
+export default roleMiddelware;

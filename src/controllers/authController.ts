@@ -1,11 +1,14 @@
-const User = require('../models/user');
-const Role = require('../models/role');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
-const { secret } = require('../config/tokenKey');
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import { validationResult } from 'express-validator';
+import { Request, Response } from 'express';
+import { Types } from 'mongoose';
 
-const generateAccessToken = (id, roles) => {
+import User from '../models/user.js';
+import Role from '../models/role.js';
+import { secret } from '../config/tokenKey.js';
+
+const generateAccessToken = (id: Types.ObjectId, roles: string[]) => {
     const payload = {
         id,
         roles,
@@ -14,7 +17,7 @@ const generateAccessToken = (id, roles) => {
 };
 
 class authController {
-    async registration(req, res) {
+    async registration(req: Request, res: Response) {
         try {
             const erorrs = validationResult(req);
             if (!erorrs.isEmpty()) {
@@ -32,11 +35,11 @@ class authController {
                 lastName,
                 password: hashPassword,
                 email,
-                roles: [userRole.value],
+                roles: [userRole?.value],
             });
             await user.save();
             const currentUser = await User.findOne({ email });
-            const token = generateAccessToken(currentUser._id, currentUser.roles);
+            const token = currentUser ? generateAccessToken(currentUser._id, currentUser.roles) : null;
             return res.json({ token });
         } catch (err) {
             console.log(err);
@@ -44,14 +47,14 @@ class authController {
         }
     }
 
-    async login(req, res) {
+    async login(req: Request, res: Response) {
         try {
             const { email, password } = req.body;
             const user = await User.findOne({ email });
             if (!user) {
                 return res.status(400).json({ message: 'No such user exists' });
             }
-            const validPassword = bcrypt.compareSync(password, user.password);
+            const validPassword = bcrypt.compareSync(password, user.password as string);
             if (!validPassword) {
                 res.status(400).json({ message: 'Password incorrect' });
             }
@@ -63,7 +66,7 @@ class authController {
         }
     }
 
-    async getUser(req, res) {
+    async getUser(req: Request, res: Response) {
         try {
             let token = req.headers.authorization;
             if (token) {
@@ -71,7 +74,7 @@ class authController {
             } else {
                 return res.status(403).json({ message: 'User is not authorized' });
             }
-            const { id } = jwt.verify(token, secret);
+            const { id } = jwt.verify(token, secret) as JwtPayload;
             const user = await User.findById(id);
             return res.json(user);
         } catch (err) {
@@ -79,7 +82,7 @@ class authController {
         }
     }
 
-    async getUsers(req, res) {
+    async getUsers(req: Request, res: Response) {
         try {
             const users = await User.find();
             res.json(users);
@@ -89,4 +92,4 @@ class authController {
     }
 }
 
-module.exports = new authController();
+export default new authController();

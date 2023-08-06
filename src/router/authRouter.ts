@@ -1,8 +1,10 @@
-const express = require('express');
+import express from 'express';
+import { check } from 'express-validator';
+
+import controller from '../controllers/authController.js';
+import roleMiddelware from '../middlewares/roleMiddelware.js';
+
 const router = express.Router();
-const controller = require('../controllers/authController');
-const { check } = require('express-validator');
-const roleMiddelware = require('../middleware/roleMiddelware');
 
 router.post(
     '/registration',
@@ -18,4 +20,4 @@ router.post('/login', controller.login);
 router.get('/user', controller.getUser);
 router.get('/users', roleMiddelware, controller.getUsers);
 
-module.exports = router;
+export default router;
