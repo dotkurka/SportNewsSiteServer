@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, TokenExpiredError } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { validationResult } from 'express-validator';
 import { Request, Response } from 'express';
@@ -13,7 +13,7 @@ const generateAccessToken = (id: Types.ObjectId, roles: string[]) => {
         id,
         roles,
     };
-    return jwt.sign(payload, secret, { expiresIn: '10m' });
+    return jwt.sign(payload, secret, { expiresIn: '120000ms' });
 };
 
 class authController {
@@ -78,7 +78,7 @@ class authController {
             const user = await User.findById(id);
             return res.json(user);
         } catch (err) {
-            console.log(err);
+            res.status(403).json({ message: 'Token is not valid' });
         }
     }
 
