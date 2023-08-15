@@ -2,9 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import 'dotenv/config';
+import { Request, Response } from 'express';
 
 import authRouter from './router/authRouter.js';
-import { Request, Response } from 'express';
+import apiRouter from './router/apiRouter.js';
 
 const app = express();
 
@@ -22,6 +23,7 @@ db.once('open', () => console.log('Connected to Database'));
 
 app.use(express.json());
 app.use('/auth', cors(corsOptions), authRouter);
+app.use('/api', cors(corsOptions), apiRouter);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Server works');

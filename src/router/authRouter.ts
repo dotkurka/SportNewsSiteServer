@@ -7,12 +7,12 @@ import errorHandlingMiddleware from '../middlewares/errorHandlingMiddleware.js';
 import roleMiddelware from '../middlewares/roleMiddelware.js';
 import { Roles } from '../models/role.js';
 
-const router = express.Router();
+const authRouter = express.Router();
 
-router.post('/registration', errorHandlingMiddleware, validationAuthSchema, controller.registration);
-router.post('/login', errorHandlingMiddleware, controller.login);
-router.get('/user', errorHandlingMiddleware, authMiddleware, controller.getUser);
-router.get(
+authRouter.post('/registration', errorHandlingMiddleware, validationAuthSchema, controller.registration);
+authRouter.post('/login', errorHandlingMiddleware, controller.login);
+authRouter.get('/user', errorHandlingMiddleware, authMiddleware, controller.getUser);
+authRouter.get(
     '/users',
     errorHandlingMiddleware,
     authMiddleware,
@@ -20,4 +20,4 @@ router.get(
     controller.getUsers
 );
 
-export default router;
+export default authRouter;
