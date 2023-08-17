@@ -1,14 +1,8 @@
-import 'dotenv/config';
-import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-
-const secret = process.env.SECRET_KEY as string;
 
 const roleMiddelware = (roles: string[]) => {
     return function (req: Request, res: Response, next: NextFunction) {
-        if (req.method === 'OPTIONS') {
-            next();
-        }
+        if (req.method === 'OPTIONS') next();
 
         try {
             const userRoles = req.user?.roles;

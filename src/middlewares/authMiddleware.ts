@@ -2,7 +2,8 @@ import 'dotenv/config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { IUser } from '../types/userTypes.js';
-import User from '../models/user.js';
+import { Types } from 'mongoose';
+import { ApiError } from '../erorr/ApiError.js';
 
 const secret: string = process.env.SECRET_KEY || '';
 
@@ -12,15 +13,15 @@ const authMiddleware = async (req: Request, res: Response, next: NextFunction) =
 
         if (authorizationToken !== undefined) {
             const token = authorizationToken.split(' ')[1];
-            const { id } = jwt.verify(token, secret) as JwtPayload;
+            const user = jwt.verify(token, secret) as JwtPayload;
 
-            if (id) {
-                const user = await User.findById(id);
+            if (user) {
                 req.user = user as IUser;
+
                 return next();
             }
         }
-        res.status(401).json({ message: 'User unauthenticated' });
+        res.status(401).json({ message: 'User unauthenticate' });
     } catch (err) {
         res.status(401).json({ message: 'User unauthenticated' });
     }

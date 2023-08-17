@@ -1,20 +1,21 @@
 import { Request, Response } from 'express';
 
-import registrationUser from '../services/registrationUser.js';
-import loginUser from '../services/loginUser.js';
-import getAllUsers from '../services/getAllUsers.js';
+import User from '../models/user.js';
+import { getAllUsers, getUserById, loginUser, registrationUser } from '../services/authService.js';
 
 class AuthController {
     registration(req: Request, res: Response) {
         registrationUser(req, res);
     }
 
-    login(req: Request, res: Response) {
-        loginUser(req, res);
+    async login(req: Request, res: Response) {
+        const { email, password } = req.body;
+        const token = await loginUser(email, password);
+        return res.json({ token });
     }
 
-    getUser(req: Request, res: Response) {
-        const user = req.user;
+    async getUser(req: Request, res: Response) {
+        const user = await getUserById(req.user.id);
         return res.json(user);
     }
 
