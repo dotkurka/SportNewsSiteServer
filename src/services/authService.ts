@@ -1,12 +1,13 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { validationResult } from 'express-validator';
-import { Request, Response } from 'express';
+import { Result, ValidationError } from 'express-validator';
 import { Types } from 'mongoose';
 
 import User from '../models/user.js';
 import Role, { Roles } from '../models/role.js';
 import { ApiError } from '../erorr/ApiError.js';
+import { IRequestBody } from '../types/userTypes.js';
+import { resolve } from 'path';
 
 const secret: string = process.env.SECRET_KEY || '';
 
@@ -18,29 +19,28 @@ const generateAccessToken = (id: Types.ObjectId, roles: string[]) => {
     return jwt.sign(payload, secret, { expiresIn: '120000ms' });
 };
 
-export const registrationUser = async (req: Request, res: Response) => {
-    const erorrs = validationResult(req);
+export const registrationUser = async (user: IRequestBody, erorrs: Result<ValidationError>) => {
     if (!erorrs.isEmpty()) {
-        return res.status(400).json({ message: 'Registartion erorr', erorrs });
+        throw new ApiError(400, 'Registartion erorr');
     }
-    const { firstName, lastName, password, email } = req.body;
+    const { firstName, lastName, password, email } = user;
     const candidate = await User.findOne({ email });
     if (candidate) {
-        return res.status(400).json({ message: 'User already exists' });
+        throw new ApiError(400, 'User already exists');
     }
     const hashPassword = bcrypt.hashSync(password, 7);
     const userRole = await Role.findOne({ value: Roles.User });
-    const user = new User({
+    const newUser = new User({
         firstName,
         lastName,
         password: hashPassword,
         email,
         roles: [userRole?.value],
     });
-    await user.save();
+    await newUser.save();
     const currentUser = await User.findOne({ email });
     const token = currentUser ? generateAccessToken(currentUser._id, currentUser.roles) : null;
-    return res.json({ token });
+    return { token };
 };
 
 export const loginUser = async (email: string, password: string) => {
@@ -53,7 +53,7 @@ export const loginUser = async (email: string, password: string) => {
         throw new ApiError(400, 'Email or Password incorrect');
     }
     const token = generateAccessToken(user._id, user.roles);
-    return token;
+    return { token };
 };
 
 export const getUserById = async (id: Types.ObjectId) => {

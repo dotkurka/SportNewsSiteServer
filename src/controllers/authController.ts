@@ -1,17 +1,21 @@
 import { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 
-import User from '../models/user.js';
 import { getAllUsers, getUserById, loginUser, registrationUser } from '../services/authService.js';
+import { IRequestBody } from '../types/userTypes.js';
 
 class AuthController {
-    registration(req: Request, res: Response) {
-        registrationUser(req, res);
+    async registration(req: Request, res: Response) {
+        const user = <IRequestBody>req.body;
+        const erorrs = validationResult(req);
+        const token = await registrationUser(user, erorrs);
+        return res.json(token);
     }
 
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
         const token = await loginUser(email, password);
-        return res.json({ token });
+        return res.json(token);
     }
 
     async getUser(req: Request, res: Response) {
