@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 
 import { getAllUsers, getUserById, loginUser, registrationUser } from '../services/authService.js';
 import { IRequestBody } from '../types/userTypes.js';
+import PropagateError from '../decorators/PropagateErrorDecorator.js';
 
 class AuthController {
     async registration(req: Request, res: Response) {
@@ -12,6 +13,7 @@ class AuthController {
         return res.json(token);
     }
 
+    @PropagateError
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
         const token = await loginUser(email, password);

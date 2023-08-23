@@ -5,7 +5,7 @@ import { Types } from 'mongoose';
 
 import User from '../models/user.js';
 import Role, { Roles } from '../models/role.js';
-import { ApiError } from '../erorr/ApiError.js';
+import { ApiError } from '../error/ApiError.js';
 import { IRequestBody } from '../types/userTypes.js';
 import { resolve } from 'path';
 

@@ -6,6 +6,7 @@ import { Request, Response } from 'express';
 
 import authRouter from './router/authRouter.js';
 import apiRouter from './router/apiRouter.js';
+import errorMiddleware from './middlewares/errorMiddleware.js';
 
 const app = express();
 
@@ -22,8 +23,10 @@ db.on('error', (err: string) => console.log(err));
 db.once('open', () => console.log('Connected to Database'));
 
 app.use(express.json());
+
 app.use('/auth', cors(corsOptions), authRouter);
 app.use('/api', cors(corsOptions), apiRouter);
+app.use(errorMiddleware);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Server works');
