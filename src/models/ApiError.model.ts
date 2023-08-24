@@ -1,4 +1,4 @@
-export class ApiError extends Error {
+class ApiError extends Error {
     status = 400;
 
     constructor(status: number, message: string) {
@@ -28,3 +28,5 @@ export class ApiError extends Error {
         return new ApiError(405, message);
     }
 }
+
+export default ApiError;

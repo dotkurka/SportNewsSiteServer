@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../types/userTypes.js';
+import { IUser } from 'types/userTypes.js';
 
 const secret: string = process.env.SECRET_KEY || '';
 

@@ -4,9 +4,8 @@ import mongoose from 'mongoose';
 import 'dotenv/config';
 import { Request, Response } from 'express';
 
-import authRouter from './router/authRouter.js';
-import apiRouter from './router/apiRouter.js';
-import errorMiddleware from './middlewares/errorMiddleware.js';
+import errorMiddleware from 'middlewares/error.middleware.js';
+import { apiRouter, authRouter } from 'router/index.js';
 
 const app = express();
 
