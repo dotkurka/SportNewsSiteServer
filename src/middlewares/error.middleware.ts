@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ApiError } from 'models/index.js';
+import { ApiError } from '../models/index.js';
 
 const errorMiddleware = (error: Error, req: Request, res: Response, next: NextFunction) => {
     if (error instanceof ApiError) {

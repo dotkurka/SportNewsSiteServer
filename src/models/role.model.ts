@@ -1,4 +1,4 @@
-import { userRoles } from 'constants/index.js';
+import { userRoles } from '../constants/index.js';
 import mongoose from 'mongoose';
 
 const Role = new mongoose.Schema({

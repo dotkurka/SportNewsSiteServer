@@ -4,7 +4,7 @@
     "description": "backend for the SportNewsSite",
     "type": "module",
     "scripts": {
-        "dev": "yarn nodemon",
+        "dev": "nodemon",
         "build": "yarn tsc && tsc-alias",
         "start": "yarn build & node build/index.js"
     },
@@ -28,6 +28,7 @@
         "nodemon": "^3.0.1",
         "ts-node": "^10.9.1",
         "tsc-alias": "^1.8.7",
+        "tsconfig-paths": "^4.2.0",
         "typescript": "^5.1.6"
     }
 }

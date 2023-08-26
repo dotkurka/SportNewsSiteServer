@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
-import { IRequestBody } from 'types/userTypes.js';
-import PropagateError from 'decorators/PropagateError.decorator.js';
-import { authService } from 'services/index.js';
+import { IRequestBody } from '../types/userTypes.js';
+import PropagateError from '../decorators/PropagateError.decorator.js';
+import { authService } from '../services/index.js';
+import BaseController from '../controllers/base.controller.js';
 
-class AuthController {
+class AuthController extends BaseController {
     async registration(req: Request, res: Response) {
         const user = <IRequestBody>req.body;
         const erorrs = validationResult(req);
@@ -13,7 +14,6 @@ class AuthController {
         return res.json(token);
     }
 
-    @PropagateError
     async login(req: Request, res: Response) {
         const { email, password } = req.body;
         const token = await authService.loginUser(email, password);
@@ -32,6 +32,3 @@ class AuthController {
 }
 
 export default new AuthController();
-function loginUser(email: any, password: any) {
-    throw new Error('Function not implemented.');
-}

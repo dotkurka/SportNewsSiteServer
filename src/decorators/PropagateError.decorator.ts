@@ -1,11 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 
-function PropagateError(_target: unknown, _propertyKey: string, descriptor: PropertyDescriptor): void {
-    const originalAction = descriptor.value;
+function PropagateError<This, Arg extends any[]>(target: new (...arg: Arg) => This) {
+    Object.getOwnPropertyNames(target.prototype).forEach((name) => {
+        const originalAction = target.prototype[name];
 
-    descriptor.value = function (req: Request, res: Response, next: NextFunction) {
-        return originalAction.call(this, req, res, next).catch(next);
-    };
+        target.prototype[name] = function (req: Request, res: Response, next: NextFunction) {
+            return originalAction.call(this, req, res, next).catch(next);
+        };
+    });
 }
 
 export default PropagateError;

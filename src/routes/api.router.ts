@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { navigationController } from 'controllers/index.js';
+import { navigationController } from '../controllers/index.js';
 
 const apiRouter = express.Router();
 

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import NavigationData from 'models/navigation.model.js';
+import NavigationData from '../models/navigation.model.js';
 
 const navigationController = async (req: Request, res: Response) => {
     const data = await NavigationData.find();

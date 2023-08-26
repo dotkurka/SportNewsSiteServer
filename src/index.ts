@@ -3,9 +3,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import 'dotenv/config';
 import { Request, Response } from 'express';
-
-import errorMiddleware from 'middlewares/error.middleware.js';
-import { apiRouter, authRouter } from 'router/index.js';
+import { apiRouter, authRouter } from './routes/index.js';
+import { errorMiddleware } from './middlewares/index.js';
 
 const app = express();
 

@@ -15,13 +15,14 @@
         "strict": true,
         "noImplicitAny": true,
         "skipLibCheck": true,
-        "experimentalDecorators": true,
-        "baseUrl": "src"
+        "experimentalDecorators": true
     },
-    "include": ["src/**/*"],
-    "exclude": ["node_modules"],
+    "include": ["index.ts", "./src/**/*"],
+    "exclude": ["./node_modules"],
     "lib": ["esnext"],
     "ts-node": {
-        "esm": true
+        "require": ["tsconfig-paths/register"],
+        "esm": true,
+        "experimentalSpecifierResolution": "node"
     }
 }
