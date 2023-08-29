@@ -1,9 +1,9 @@
 import express from 'express';
 
-import { validationAuthSchema } from '../config/validationAuthSchema.js';
 import { authController } from '../controllers/index.js';
 import { authMiddleware } from '../middlewares/index.js';
 import { userRoles } from '../constants/index.js';
+import { validationAuthSchema } from '../validation/index.js';
 
 const authRouter = express.Router();
 

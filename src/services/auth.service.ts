@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 import { Result, ValidationError } from 'express-validator';
 import { Types } from 'mongoose';
 
-import { IRequestBody } from '../types/userTypes.js';
+import { IRequestBody } from '../types/user.types.js';
 import { tokenGenerate } from '../utils/index.js';
 import { ApiError, RoleModel, UserModel } from '../models/index.js';
 import { userRoles } from '../constants/index.js';

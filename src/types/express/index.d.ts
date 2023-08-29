@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import type { IUser } from '../userTypes.js';
+import type { IUser } from '../user.types.js';
 
 export {};
 

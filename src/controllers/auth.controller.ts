@@ -1,11 +1,12 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 
-import { IRequestBody } from '../types/userTypes.js';
+import { IRequestBody } from '../types/user.types.js';
 import PropagateError from '../decorators/PropagateError.decorator.js';
 import { authService } from '../services/index.js';
 import BaseController from '../controllers/base.controller.js';
 
+@PropagateError
 class AuthController extends BaseController {
     async registration(req: Request, res: Response) {
         const user = <IRequestBody>req.body;
