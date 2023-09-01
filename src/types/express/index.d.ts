@@ -1,12 +1,10 @@
-import { Request } from 'express';
-import type { IUser } from '../user.types.js';
+declare namespace Express {
+    import { Request } from 'express';
+    import { IUser, IFile, IAppFile } from '../../interfaces/index.js';
 
-export {};
-
-declare global {
-    namespace Express {
-        export interface Request {
-            user: IUser;
-        }
+    interface Request {
+        user: IUser;
+        uploadedFiles: IFile[];
+        files: { file: IAppFile[] };
     }
 }

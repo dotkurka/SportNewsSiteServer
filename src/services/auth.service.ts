@@ -2,19 +2,20 @@ import bcrypt from 'bcryptjs';
 import { Result, ValidationError } from 'express-validator';
 import { Types } from 'mongoose';
 
-import { IRequestBody } from '../types/user.types.js';
 import { tokenGenerate } from '../utils/index.js';
-import { ApiError, RoleModel, UserModel } from '../models/index.js';
-import { userRoles } from '../constants/index.js';
+import { RoleModel, UserModel } from '../models/index.js';
+import { messageConstants, userRoles } from '../constants/index.js';
+import ApiError from '../responses/ApiError.handler.js';
+import { IRequestBody } from '../interfaces/index.js';
 
 const registrationUser = async (user: IRequestBody, erorrs: Result<ValidationError>) => {
     if (!erorrs.isEmpty()) {
-        throw new ApiError(400, 'Registartion erorr');
+        throw new ApiError(400, messageConstants.registrationError);
     }
     const { firstName, lastName, password, email } = user;
     const candidate = await UserModel.findOne({ email });
     if (candidate) {
-        throw new ApiError(400, 'User already exists');
+        throw new ApiError(400, messageConstants.userAlreadyExist);
     }
     const hashPassword = bcrypt.hashSync(password, 7);
     const userRole = await RoleModel.findOne({ value: userRoles.user });
@@ -34,11 +35,11 @@ const registrationUser = async (user: IRequestBody, erorrs: Result<ValidationErr
 const loginUser = async (email: string, password: string) => {
     const user = await UserModel.findOne({ email });
     if (!user) {
-        throw new ApiError(400, 'No such user exists');
+        throw new ApiError(400, messageConstants.userNotExist);
     }
     const validPassword = bcrypt.compareSync(password, user.password as string);
     if (!validPassword) {
-        throw new ApiError(400, 'Email or Password incorrect');
+        throw new ApiError(400, messageConstants.incorrectEmailOrPassword);
     }
     const token = tokenGenerate(user._id, user.roles);
     return { token };
@@ -48,7 +49,7 @@ const getUserById = async (id: Types.ObjectId) => {
     const user = await UserModel.findById(id);
 
     if (!user) {
-        throw new ApiError(401, 'User unauthenticate');
+        throw new ApiError(401, messageConstants.unauthorized);
     }
 
     return user;

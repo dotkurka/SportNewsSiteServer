@@ -1,11 +1,17 @@
 import mongoose from 'mongoose';
 
-const articleModel = new mongoose.Schema();
-
-articleModel.add({
-    title: { type: String, require: true },
-    path: { type: String, require: true },
-    subItem: [articleModel],
+const ArticleModel = new mongoose.Schema({
+    img: { type: String },
+    alt: { type: String },
+    title: {
+        published: { type: String },
+        head: { type: String },
+        description: { type: String },
+    },
+    category: { type: String, ref: 'category' },
+    article: { type: String },
+    path: { type: String },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
 });
 
-export default mongoose.model('article', articleModel);
+export default mongoose.model('article', ArticleModel);
