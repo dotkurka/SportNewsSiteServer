@@ -25,7 +25,7 @@ const filesExtentions = {
 
 const fileMetadata = {
     path: PATH,
-    uploadingPath: path.join(__dirname, `../../../${PATH}`),
+    uploadingPath: path.join(__dirname, `../${PATH}`),
     loggerPath: path.join(__dirname, `../../../${LOG_FILE}`),
     maxFileCount: 10,
     maxFileSize: 5000,

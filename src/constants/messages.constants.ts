@@ -4,6 +4,7 @@ export default {
     invalidRequest: 'Invalid request',
     invalidGrandType: 'Invalid grand type',
     emailNotExist: 'User with this email is not exist',
+    noAccess: 'You do not have access',
     error: 'Error',
     registrationError: 'Registartion erorr',
     somethingWentWrong: 'Something went wrong',

@@ -12,9 +12,10 @@ export interface IAppFile {
 
 export interface IFile extends mongoose.Document {
     id: string;
-    server_path: string;
-    path_small?: string;
-    original_name: string;
+    serverPath: string;
+    pathSmall?: string;
+    originalName: string;
+    name: string;
     size: number;
     path: string;
 }

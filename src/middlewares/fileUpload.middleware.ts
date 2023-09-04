@@ -8,7 +8,7 @@ const uploadFiles =
     (formats: string[], isRequired = false, save = true, size?: number) =>
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            if (!req.files && isRequired) {
+            if (!req.files.file && isRequired) {
                 throw new ApiError(400, messageConstants.pleaseUploadFile);
             }
             if (req.files && Object.keys(req.files).length !== 0) {

@@ -1,10 +1,11 @@
-import { check } from 'express-validator';
+import Joi from 'joi';
+import { passwordRegex } from '../constants/index.js';
 
-const validationAuthSchema = [
-    check('firstName', 'First name cannot be empty').notEmpty().isLength({ max: 15, min: 2 }),
-    check('lastName', 'Last name cannot be empty').notEmpty().isLength({ max: 15, min: 2 }),
-    check('password', 'Password must be at least 8 characters').isLength({ min: 8 }),
-    check('email', 'Email not valid').isEmail(),
-];
+const validationAuthSchema = Joi.object({
+    firstName: Joi.string().min(2).max(15).required(),
+    lastName: Joi.string().min(2).max(15).required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().regex(new RegExp(passwordRegex)).required(),
+});
 
 export default validationAuthSchema;

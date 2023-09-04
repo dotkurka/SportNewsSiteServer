@@ -8,13 +8,7 @@ import categoryRouter from './category.router.js';
 const router = Router();
 
 router.use('/category', categoryRouter);
-
-router.use(
-    '/article',
-    authMiddleware.verifyToken,
-    authMiddleware.verifyRole([userRoles.user, userRoles.admin]),
-    articleRouter
-);
+router.use('/article', authMiddleware.verifyToken, articleRouter);
 router.use('/auth', authRouter);
 
 export default router;

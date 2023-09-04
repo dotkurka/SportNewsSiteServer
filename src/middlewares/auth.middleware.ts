@@ -1,7 +1,8 @@
-import 'dotenv/config';
 import jwt, { JwtPayload } from 'jsonwebtoken';
+import 'dotenv/config';
 import { Request, Response, NextFunction } from 'express';
 import { IUser } from '../interfaces/index.js';
+import { messageConstants } from '../constants/index.js';
 
 const secret: string = process.env.SECRET_KEY || '';
 
@@ -17,14 +18,14 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
                 return next();
             }
         }
-        res.status(401).json({ message: 'User unauthenticated' });
+        res.status(401).json({ message: messageConstants.unauthorized });
     } catch (err) {
-        res.status(401).json({ message: 'User unauthenticated' });
+        res.status(401).json({ message: messageConstants.unauthorized });
     }
 };
 
 const verifyRole = (roles: string[]) => {
-    return function (req: Request, res: Response, next: NextFunction) {
+    return (req: Request, res: Response, next: NextFunction) => {
         if (req.method === 'OPTIONS') next();
 
         try {
@@ -36,12 +37,12 @@ const verifyRole = (roles: string[]) => {
                 }
             });
             if (!hasRole) {
-                return res.status(403).json({ message: 'You do not have access' });
+                return res.status(403).json({ message: messageConstants.noAccess });
             }
             next();
         } catch (err) {
             console.log(err);
-            res.status(401).json({ message: 'User unauthenticated' });
+            res.status(401).json({ message: messageConstants.unauthorized });
         }
     };
 };

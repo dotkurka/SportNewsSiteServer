@@ -1,12 +1,11 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import bodyParse from 'body-parser';
-import fileUpload from 'express-fileupload';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import formData from 'express-form-data';
 import MasterRouter from './routes/index.js';
 import { errorMiddleware } from './middlewares/index.js';
 import { corsOptions } from './constants/index.js';
@@ -20,10 +19,12 @@ const app = express();
 app.use(json());
 app.use(raw());
 app.use(text());
-app.use(express.static(path.resolve(__dirname, 'uploads')));
-app.use(fileUpload());
+app.use(formData.parse());
 app.use(express.json({ limit: '1000kb' }));
 app.use(cors(corsOptions));
+app.use('/uploads', express.static(path.resolve(__dirname, 'uploads')));
+
+dotenv.config();
 
 const PORT = process.env.PORT_SERVER;
 

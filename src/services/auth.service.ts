@@ -1,5 +1,4 @@
 import bcrypt from 'bcryptjs';
-import { Result, ValidationError } from 'express-validator';
 import { Types } from 'mongoose';
 
 import { tokenGenerate } from '../utils/index.js';
@@ -8,10 +7,7 @@ import { messageConstants, userRoles } from '../constants/index.js';
 import ApiError from '../responses/ApiError.handler.js';
 import { IRequestBody } from '../interfaces/index.js';
 
-const registrationUser = async (user: IRequestBody, erorrs: Result<ValidationError>) => {
-    if (!erorrs.isEmpty()) {
-        throw new ApiError(400, messageConstants.registrationError);
-    }
+const registrationUser = async (user: IRequestBody) => {
     const { firstName, lastName, password, email } = user;
     const candidate = await UserModel.findOne({ email });
     if (candidate) {

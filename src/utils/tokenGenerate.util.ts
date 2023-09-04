@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { Types } from 'mongoose';
+import 'dotenv/config';
 
 const secret: string = process.env.SECRET_KEY || '';
 
