@@ -7,14 +7,14 @@ import validationArticleSchema from '../validation/article.schema.js';
 
 const articleRouter = express.Router();
 
-articleRouter.get('/', articleController.getArticles);
+articleRouter.get('/', articleController.getArticleByQueryParams);
 articleRouter.post(
     '/',
     validationMiddleware(validationArticleSchema),
-    fileUploadMiddleware.uploadFiles([fileFormats.jpeg, fileFormats.jpg, fileFormats.png], false),
+    fileUploadMiddleware.uploadFiles([fileFormats.jpeg, fileFormats.jpg, fileFormats.png], true),
     articleController.createArticle
 );
-// articleRouter.post('/', articleController.getArticles);
+articleRouter.get('/:pathArticle', articleController.getArticleByParams);
 // articleRouter.delete('/', articleController.getArticles);
 // articleRouter.patch('/', articleController.getArticles);
 

@@ -6,6 +6,7 @@ export default {
     emailNotExist: 'User with this email is not exist',
     noAccess: 'You do not have access',
     error: 'Error',
+    notFoundPage: 'Not Found this page',
     registrationError: 'Registartion erorr',
     somethingWentWrong: 'Something went wrong',
     invalidScope: 'Invalid scope',

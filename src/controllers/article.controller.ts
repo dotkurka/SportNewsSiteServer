@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 
 import PropagateError from '../decorators/PropagateError.decorator.js';
 import { IArticle } from '../interfaces/index.js';
+import { TypedRequestQuery } from '../interfaces/request.interface.js';
 import ApiError from '../responses/ApiError.handler.js';
 
 import { articleService } from '../services/index.js';
@@ -10,22 +10,37 @@ import { articleService } from '../services/index.js';
 @PropagateError
 class ArticleCotroller {
     async getArticles(req: Request, res: Response) {
-        const data = await articleService.getAllArticle();
+        const data = await articleService.getAll();
 
         return res.json(data);
     }
 
     async createArticle(req: Request, res: Response) {
         const imgPath = req.uploadedFiles[0].path;
-        if (!imgPath) {
-            throw new ApiError(401, 'not img');
-        }
         const article = <IArticle>req.body;
         const user = req.user;
-        const post = await articleService.createArticle(article, imgPath, user);
+
+        const post = await articleService.create(article, imgPath, user);
         console.log(req.body);
 
         return res.json(post);
+    }
+
+    async getArticleByParams(req: Request, res: Response) {
+        const params = req.params.pathArticle;
+        const article = await articleService.getByParams(params);
+
+        return res.json(article);
+    }
+
+    async getArticleByQueryParams(
+        req: TypedRequestQuery<{ title: string; category: string }>,
+        res: Response
+    ) {
+        const { title, category } = req.query;
+
+        const articles = await articleService.getByQuery(title);
+        return res.json(articles);
     }
 }
 

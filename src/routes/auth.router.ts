@@ -3,13 +3,13 @@ import express from 'express';
 import { authController } from '../controllers/index.js';
 import { authMiddleware, validationMiddleware } from '../middlewares/index.js';
 import { userRoles } from '../constants/index.js';
-import { validationArticleSchema } from '../validation/index.js';
+import { validationAuthSchema } from '../validation/index.js';
 
 const authRouter = express.Router();
 
 authRouter.post(
     '/registration',
-    validationMiddleware(validationArticleSchema),
+    validationMiddleware(validationAuthSchema),
     authController.registration
 );
 authRouter.post('/login', authController.login);

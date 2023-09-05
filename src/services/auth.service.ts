@@ -22,9 +22,8 @@ const registrationUser = async (user: IRequestBody) => {
         email,
         roles: [userRole?.value],
     });
-    await newUser.save();
-    const currentUser = await UserModel.findOne({ email });
-    const token = currentUser ? tokenGenerate(currentUser._id, currentUser.roles) : null;
+    const currentUser = await newUser.save();
+    const token = tokenGenerate(currentUser._id, currentUser.roles);
     return { token };
 };
 
@@ -43,7 +42,6 @@ const loginUser = async (email: string, password: string) => {
 
 const getUserById = async (id: Types.ObjectId) => {
     const user = await UserModel.findById(id);
-
     if (!user) {
         throw new ApiError(401, messageConstants.unauthorized);
     }
