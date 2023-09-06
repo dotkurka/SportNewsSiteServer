@@ -5,7 +5,7 @@ import { authService } from '../services/index.js';
 import BaseController from '../controllers/base.controller.js';
 import { IRequestBody } from '../interfaces/index.js';
 
-// @PropagateError
+@PropagateError
 class AuthController extends BaseController {
     async registration(req: Request, res: Response) {
         const user = <IRequestBody>req.body;

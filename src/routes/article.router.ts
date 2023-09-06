@@ -7,7 +7,7 @@ import validationArticleSchema from '../validation/article.schema.js';
 
 const articleRouter = express.Router();
 
-articleRouter.get('/', articleController.getArticleByQueryParams);
+articleRouter.get('/', articleController.getArticles);
 articleRouter.post(
     '/',
     validationMiddleware(validationArticleSchema),

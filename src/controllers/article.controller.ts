@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import PropagateError from '../decorators/PropagateError.decorator.js';
-import { IArticle } from '../interfaces/index.js';
+import { IArticleData, IRequestQuery } from '../interfaces/index.js';
 import { TypedRequestQuery } from '../interfaces/request.interface.js';
 import ApiError from '../responses/ApiError.handler.js';
 
@@ -9,15 +9,16 @@ import { articleService } from '../services/index.js';
 
 @PropagateError
 class ArticleCotroller {
-    async getArticles(req: Request, res: Response) {
-        const data = await articleService.getAll();
+    async getArticles(req: TypedRequestQuery<IRequestQuery>, res: Response) {
+        const { title, category, limit, page } = req.query;
+        const data = await articleService.getAll({ title, category, limit, page });
 
         return res.json(data);
     }
 
     async createArticle(req: Request, res: Response) {
         const imgPath = req.uploadedFiles[0].path;
-        const article = <IArticle>req.body;
+        const article = <IArticleData>req.body;
         const user = req.user;
 
         const post = await articleService.create(article, imgPath, user);
@@ -31,16 +32,6 @@ class ArticleCotroller {
         const article = await articleService.getByParams(params);
 
         return res.json(article);
-    }
-
-    async getArticleByQueryParams(
-        req: TypedRequestQuery<{ title: string; category: string }>,
-        res: Response
-    ) {
-        const { title, category } = req.query;
-
-        const articles = await articleService.getByQuery(title);
-        return res.json(articles);
     }
 }
 

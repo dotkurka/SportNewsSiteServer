@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+import { Query } from 'express-serve-static-core';
 
 interface IArticleData {
     img: string;
@@ -12,4 +13,11 @@ interface IArticleData {
     user: Types.ObjectId;
 }
 
-export default IArticleData;
+interface IRequestQuery extends Query {
+    title: string;
+    category: string;
+    limit: string | any;
+    page: string | any;
+}
+
+export { IArticleData, IRequestQuery };
