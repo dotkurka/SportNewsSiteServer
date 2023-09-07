@@ -10,12 +10,16 @@ const articleRouter = express.Router();
 articleRouter.get('/', articleController.getArticles);
 articleRouter.post(
     '/',
-    validationMiddleware(validationArticleSchema),
+    validationMiddleware(validationArticleSchema.createSchema),
     fileUploadMiddleware.uploadFiles([fileFormats.jpeg, fileFormats.jpg, fileFormats.png], true),
     articleController.createArticle
 );
 articleRouter.get('/:pathArticle', articleController.getArticleByParams);
-// articleRouter.delete('/', articleController.getArticles);
-// articleRouter.patch('/', articleController.getArticles);
+articleRouter.patch(
+    '/:pathArticle',
+    validationMiddleware(validationArticleSchema.updateSchema),
+    articleController.updateArticle
+);
+articleRouter.delete('/:pathArticle', articleController.removeArticle);
 
 export default articleRouter;
