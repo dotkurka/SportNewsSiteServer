@@ -9,6 +9,7 @@ import formData from 'express-form-data';
 import MasterRouter from './routes/index.js';
 import { errorMiddleware } from './middlewares/index.js';
 import { corsOptions } from './constants/index.js';
+import fileRouter from './routes/file.router.js';
 
 const { json, raw, text } = bodyParse;
 
@@ -34,6 +35,7 @@ db.on('error', (err: string) => console.log(err));
 db.once('open', () => console.log('Connected to Database'));
 
 app.use('/api', MasterRouter);
+app.use('/uploads', fileRouter);
 app.get('/', (req: Request, res: Response) => {
     res.json({ message: 'Success', status: 200 });
 });

@@ -10,11 +10,9 @@ import { articleService } from '../services/index.js';
 @PropagateError
 class ArticleCotroller {
     async createArticle(req: Request, res: Response) {
-        const imgPath = req.uploadedFiles[0].path;
         const article = <IArticleData>req.body;
         const user = req.user;
-
-        const post = await articleService.create(article, imgPath, user);
+        const post = await articleService.create(article, user);
         console.log(req.body);
 
         return res.json(post);

@@ -8,7 +8,7 @@ import { currentDate } from '../utils/index.js';
 
 // In process...
 
-const create = async (articleData: IArticleData, imgPath: string, user: IUser) => {
+const create = async (articleData: IArticleData, user: IUser) => {
     if (!user) {
         throw new ApiError(401, messageConstants.unauthorized);
     }
@@ -18,7 +18,7 @@ const create = async (articleData: IArticleData, imgPath: string, user: IUser) =
         .replaceAll(' ', '-')}`;
 
     const article = new ArticleModel({
-        img: imgPath,
+        img: articleData.img,
         alt: articleData.alt,
         title: articleData.title,
         description: articleData.description,

@@ -11,7 +11,6 @@ articleRouter.get('/', articleController.getArticles);
 articleRouter.post(
     '/',
     validationMiddleware(validationArticleSchema.createSchema),
-    fileUploadMiddleware.uploadFiles([fileFormats.jpeg, fileFormats.jpg, fileFormats.png], true),
     articleController.createArticle
 );
 articleRouter.get('/:pathArticle', articleController.getArticleByParams);
