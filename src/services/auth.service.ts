@@ -4,8 +4,8 @@ import { Types } from 'mongoose';
 import { tokenGenerate } from '../utils/index.js';
 import { RoleModel, UserModel } from '../models/index.js';
 import { messageConstants, userRoles } from '../constants/index.js';
-import ApiError from '../responses/ApiError.handler.js';
 import { IRequestBody } from '../interfaces/index.js';
+import ApiError from '../responses/ApiError.handler.js';
 
 const registrationUser = async (user: IRequestBody) => {
     const { firstName, lastName, password, email } = user;
@@ -13,6 +13,7 @@ const registrationUser = async (user: IRequestBody) => {
     if (candidate) {
         throw new ApiError(400, messageConstants.userAlreadyExist);
     }
+
     const hashPassword = bcrypt.hashSync(password, 7);
     const userRole = await RoleModel.findOne({ value: userRoles.user });
     const newUser = new UserModel({

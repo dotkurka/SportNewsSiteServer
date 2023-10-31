@@ -9,7 +9,6 @@ const fileRouter = express.Router();
 fileRouter.post(
     '/',
     validationMiddleware(fileUploadSchema),
-    authMiddleware.verifyToken,
     fileUploadMiddleware.uploadFiles([fileFormats.jpeg, fileFormats.jpg, fileFormats.png], true),
     fileController.getImageFile
 );

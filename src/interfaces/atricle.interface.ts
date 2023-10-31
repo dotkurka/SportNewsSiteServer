@@ -6,18 +6,18 @@ interface IArticleData {
     alt: string;
     title: string;
     description: string;
-    category: string;
+    category: Types.ObjectId;
     article: string;
     published: string;
     path: string;
     user: Types.ObjectId;
 }
 
-interface IRequestQuery extends Query {
+interface IArticleQuery extends Query {
     title: string;
     category: string;
     limit: string | any;
     page: string | any;
 }
 
-export { IArticleData, IRequestQuery };
+export { IArticleData, IArticleQuery };

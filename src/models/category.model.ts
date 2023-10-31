@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const CategoryModel = new mongoose.Schema();
 
 CategoryModel.add({
-    title: { type: String, require: true },
+    title: { type: String, unique: true },
     path: { type: String, require: true },
     subItem: [CategoryModel],
 });

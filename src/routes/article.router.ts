@@ -1,8 +1,7 @@
 import express from 'express';
 
-import { fileFormats } from '../constants/index.js';
 import { articleController } from '../controllers/index.js';
-import { fileUploadMiddleware, validationMiddleware } from '../middlewares/index.js';
+import { validationMiddleware } from '../middlewares/index.js';
 import validationArticleSchema from '../validation/article.schema.js';
 
 const articleRouter = express.Router();

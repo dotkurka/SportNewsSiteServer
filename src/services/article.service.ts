@@ -1,22 +1,16 @@
 import uniqid from 'uniqid';
 
 import { messageConstants, userRoles } from '../constants/index.js';
-import { IAppFile, IArticleData, IRequestQuery, IUser } from '../interfaces/index.js';
+import { IArticleData, IArticleQuery, IUser } from '../interfaces/index.js';
+import { filterUndefinedFields } from '../utils/index.js';
 import { ArticleModel } from '../models/index.js';
 import ApiError from '../responses/ApiError.handler.js';
-import { currentDate } from '../utils/index.js';
-
-// In process...
 
 const create = async (articleData: IArticleData, user: IUser) => {
     if (!user) {
         throw new ApiError(401, messageConstants.unauthorized);
     }
-    const createDate = currentDate();
-    const pathArticle = `${uniqid.time()}-${articleData.title
-        .replaceAll(/[\s/_?\.]/g, ' ')
-        .replaceAll(' ', '-')}`;
-
+    const pathArticle = `${uniqid.time()}-${articleData.title.replaceAll(/[\s/_?\.]/g, ' ').replaceAll(' ', '-')}`;
     const article = new ArticleModel({
         img: articleData.img,
         alt: articleData.alt,
@@ -24,40 +18,27 @@ const create = async (articleData: IArticleData, user: IUser) => {
         description: articleData.description,
         category: articleData.category,
         article: articleData.article,
-        published: createDate,
         path: pathArticle,
         user: user.id,
     });
-    const newArticle = await article.save();
+
+    const newArticle = await article.save().then((a) => a.populate('category', 'title'));
 
     return newArticle;
 };
 
-const getAll = async (query: IRequestQuery) => {
-    let { title, category, limit, page } = query;
-    limit = limit * 1 || 10;
-    page = page || 1;
-    let offset = page * limit - limit;
-    let article;
+const getAll = async (query: IArticleQuery) => {
+    const { title, category, limit = 10, page = 1 } = query;
+    const offset = page * limit - limit;
+    const queryFields = filterUndefinedFields({ title, category });
 
-    if (!title && !category) {
-        article = await ArticleModel.find().limit(limit).skip(offset).sort({ published: -1 });
-    }
-    if (title && !category) {
-        article = await ArticleModel.find({ title }).limit(limit).skip(offset).sort({ published: -1 });
-    }
-    if (!title && category) {
-        article = await ArticleModel.find({ category })
-            .limit(limit)
-            .skip(offset)
-            .sort({ published: -1 });
-    }
-    if (title && category) {
-        article = await ArticleModel.find({ title, category })
-            .limit(limit)
-            .skip(offset)
-            .sort({ published: -1 });
-    }
+    const article = await ArticleModel.find(queryFields)
+        .limit(limit * 1)
+        .skip(offset)
+        .sort({ published: -1 })
+        .populate('category', 'title')
+        .exec();
+
     if (!article) {
         throw new ApiError(404, messageConstants.notFoundPage);
     }
@@ -66,7 +47,10 @@ const getAll = async (query: IRequestQuery) => {
 };
 
 const getByParams = async (params: string) => {
-    const article = await ArticleModel.findOne({ path: params }).populate('user').exec();
+    const article = await ArticleModel.findOne({ path: params })
+        .populate([{ path: 'user' }, { path: 'category', select: 'title' }])
+        .exec();
+
     if (!article) {
         throw new ApiError(404, messageConstants.notFoundPage);
     }
@@ -76,6 +60,7 @@ const getByParams = async (params: string) => {
 
 const update = async (params: string, article: IArticleData, user: IUser) => {
     const currentArticle = await ArticleModel.findOne({ path: params });
+
     if (!user) {
         throw new ApiError(401, messageConstants.unauthorized);
     }
@@ -85,15 +70,19 @@ const update = async (params: string, article: IArticleData, user: IUser) => {
     if (currentArticle.user?._id === user.id || user.roles.includes(userRoles.admin)) {
         const updatedArticle = await ArticleModel.findOneAndUpdate({ path: params }, article, {
             new: true,
-        });
+        })
+            .populate('category', 'title')
+            .exec();
 
         return updatedArticle;
     }
+
     throw new ApiError(403, messageConstants.noAccess);
 };
 
 const remove = async (params: string, user: IUser) => {
     const currentArticle = await ArticleModel.findOne({ path: params });
+
     if (!user) {
         throw new ApiError(401, messageConstants.unauthorized);
     }
@@ -105,6 +94,7 @@ const remove = async (params: string, user: IUser) => {
 
         return article;
     }
+
     throw new ApiError(403, messageConstants.noAccess);
 };
 

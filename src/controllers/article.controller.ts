@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
 
 import PropagateError from '../decorators/PropagateError.decorator.js';
-import { IArticleData, IRequestQuery } from '../interfaces/index.js';
+import { IArticleData, IArticleQuery } from '../interfaces/index.js';
 import { TypedRequestQuery } from '../interfaces/request.interface.js';
-import ApiError from '../responses/ApiError.handler.js';
 
 import { articleService } from '../services/index.js';
 
@@ -13,12 +12,11 @@ class ArticleCotroller {
         const article = <IArticleData>req.body;
         const user = req.user;
         const post = await articleService.create(article, user);
-        console.log(req.body);
 
-        return res.json(post);
+        return res.status(201).json(post);
     }
 
-    async getArticles(req: TypedRequestQuery<IRequestQuery>, res: Response) {
+    async getArticles(req: TypedRequestQuery<IArticleQuery>, res: Response) {
         const { title, category, limit, page } = req.query;
         const data = await articleService.getAll({ title, category, limit, page });
 
